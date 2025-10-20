@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Women's Day</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Caveat:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
+            background-color: #3B4049;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f472b6 0%, #86efac 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-dot {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 30px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* Greeting Screen */
+        .greeting-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f472b6 0%, #86efac 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .greeting-screen.active {
+            display: flex;
+        }
+
+        .greeting-title {
+            font-size: 48px;
+            color: white;
+            font-style: italic;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .greeting-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+        }
+
+        .start-button {
+            padding: 12px 40px;
+            font-size: 16px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-button:hover {
+            background: white;
+            color: #f472b6;
+        }
+
+        /* Main Screen */
+        .main-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fbcfe8 0%, #d1fae5 100%);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .main-screen.active {
+            display: flex;
+        }
+
+        /* Background Image Container */
+        .background-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            z-index: 0;
+            border-radius: 0;
+            overflow: hidden;
+            background: white;
+        }
+
+        .background-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Decorative Elements */
+        .decorative-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        .small-heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .small-cat {
+            position: absolute;
+            font-size: 24px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: translateY(-20px);
+                opacity: 1;
+            }
+        }
+
+        /* Envelope */
+        .wrapper {
+            height: 200px;
+            width: 300px;
+            background-color: #f472b6; /* main pink */
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .lid {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            border-right: 150px solid transparent;
+            border-bottom: 100px solid transparent;
+            border-left: 150px solid transparent;
+            transform-origin: top;
+            transition: transform 0.25s linear;
+        }
+
+        /* Lid when closed */
+        .lid.one {
+            border-top: 100px solid #f8a6cd; /* lighter pink */
+            transform: rotateX(0deg);
+            z-index: 3;
+            transition-delay: 0.75s;
+        }
+
+        /* Lid when opened */
+        .lid.two {
+            border-top: 100px solid #f472b6; /* main pink */
+            transform: rotateX(90deg);
+            z-index: 1;
+            transition-delay: 0.5s;
+        }
+
+        .envelope {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            border-top: 100px solid transparent;
+            border-right: 150px solid #fbcfe8; /* very light pink */
+            border-bottom: 100px solid #fbcfe8; /* very light pink */
+            border-left: 150px solid #f8a6cd; /* slightly darker light pink */
+            z-index: 3;
+        }
+
+        .letter {
+            position: absolute;
+            top: 0;
+            width: 80%;
+            height: 80%;
+            background-color: white;
+            border-radius: 15px;
+            z-index: 2;
+            transition: 0.5s;
+        }
+
+        /* Mobile letter positioning fix */
+        @media (max-width: 768px) {
+            
+            .letter {
+                position: relative;
+                top: auto;
+                margin: 10px auto;
+            }
+        }
+
+        .letter p {
+            text-align: center;
+            font-size: 30px;
+            margin-top: 30px;
+            color: #3B4049;
+        }
+
+        .wrapper:hover .lid.one {
+            transform: rotateX(90deg);
+            transition-delay: 0s;
+        }
+
+        .wrapper:hover .lid.two {
+            transform: rotateX(180deg);
+            transition-delay: 0.25s;
+        }
+
+        .wrapper:hover .letter {
+            transform: translateY(-50px);
+            transition-delay: 0.5s;
+        }
+
+        /* Popping Hearts */
+        .pop-heart {
+            position: absolute;
+            font-size: 30px;
+            pointer-events: none;
+            animation: popUp 1.5s ease-out forwards;
+        }
+
+        @keyframes popUp {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Letter Modal */
+        .letter-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+            cursor: pointer;
+        }
+
+        .letter-modal.active {
+            display: flex;
+        }
+
+        .letter-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            cursor: default;
+            position: relative;
+        }
+
+        .letter-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #f472b6;
+        }
+
+        .letter-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .letter-title {
+            font-size: 28px;
+            color: #f472b6;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .letter-text {
+            font-size: 20px;
+            color: #333;
+            line-height: 1.8;
+            text-align: center;
+            min-height: 100px;
+            font-family: 'Kalam', 'Caveat', cursive;
+            letter-spacing: 0.2px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .letter-text.typing {
+            border-right: 2px solid #f472b6;
+            animation: blink 0.7s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            49% {
+                border-right-color: #f472b6;
+            }
+
+            50%,
+            100% {
+                border-right-color: transparent;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .greeting-title {
+                font-size: 36px;
+                margin-bottom: 15px;
+            }
+
+            .greeting-subtitle {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+
+            .start-button {
+                padding: 10px 30px;
+                font-size: 14px;
+            }
+
+            .main-screen {
+                padding: 20px;
+                box-sizing: border-box;
+            }
+
+            .wrapper {
+                height: 150px;
+                width: 250px;
+                margin: 0 auto;
+            }
+
+            .letter p {
+                font-size: 24px;
+                margin-top: 20px;
+            }
+
+            .letter-content {
+                padding: 25px;
+                max-width: 90%;
+                margin: 20px;
+            }
+
+            .letter-image {
+                height: 250px;
+            }
+
+            .letter-text {
+                font-size: 18px;
+                line-height: 1.6;
+            }
+
+            .small-heart {
+                font-size: 16px;
+            }
+
+            .small-cat {
+                font-size: 20px;
+            }
+
+            .pop-heart {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .greeting-title {
+                font-size: 28px;
+            }
+
+            .greeting-subtitle {
+                font-size: 14px;
+            }
+
+            .main-screen {
+                padding: 15px;
+                box-sizing: border-box;
+            }
+
+            .wrapper {
+                height: 120px;
+                width: 200px;
+                margin: 0 auto;
+            }
+
+            .letter p {
+                font-size: 20px;
+                margin-top: 15px;
+            }
+
+            .letter-content {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .letter-image {
+                height: 200px;
+            }
+
+            .letter-text {
+                font-size: 16px;
+            }
+
+            .small-heart {
+                font-size: 14px;
+            }
+
+            .small-cat {
+                font-size: 18px;
+            }
+
+            .pop-heart {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-dot" id="loadingDot"></div>
+        <div class="loading-text">Preparing for a surprise</div>
+    </div>
+
+    <!-- Greeting Screen -->
+    <div class="greeting-screen" id="greetingScreen">
+        <h1 class="greeting-title">Happy Women's Day</h1>
+        <p class="greeting-subtitle">Special gift for you</p>
+        <button class="start-button" id="startButton">Start</button>
+    </div>
+
+    <!-- Main Screen -->
+    <div class="main-screen" id="mainScreen">
+        <!-- Background Image Container -->
+        <div class="background-image-container">
+            <img src="placeholder.jpg" alt="Background cat image">
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="decorative-hearts" id="decorativeHearts"></div>
+
+        <!-- Envelope -->
+        <div class="wrapper">
+            <div class="lid one"></div>
+            <div class="lid two"></div>
+            <div class="envelope"></div>
+            <div class="letter">
+                <p>Trang</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Letter Modal -->
+    <div class="letter-modal" id="letterModal">
+        <div class="letter-content" id="letterContent">
+            <button class="letter-close-btn" id="closeLetterBtn">✕</button>
+            <img src="her.jpg" alt="Letter image" class="letter-image">
+            <!-- <h2 class="letter-title">Happy Women's Day 20/10</h2> -->
+            <p class="letter-text" id="letterText">May you always have plenty of joy, MONEY, and luck. Wishing you to become more and more beautiful, confident, and radiant.
+                May you have sincere people by your side, and enough courage to let go of what exhausts you.
+                And most importantly, may you always know that you deserve all the best things, not only on October 20th but every day after that as well.</p>
+        </div>
+    </div>
+
+    <script>
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingDot = document.getElementById('loadingDot');
+        const greetingScreen = document.getElementById('greetingScreen');
+        const mainScreen = document.getElementById('mainScreen');
+        const startButton = document.getElementById('startButton');
+        const envelope = document.querySelector('.wrapper');
+        const letterModal = document.getElementById('letterModal');
+        const letterText = document.getElementById('letterText');
+        const closeLetterBtn = document.getElementById('closeLetterBtn');
+        const decorativeHearts = document.getElementById('decorativeHearts');
+
+        // Audio setup
+        const audio = new Audio('audio.mp3');
+        audio.loop = true;
+        audio.volume = 0.5; // 50% volume
+
+        function animateRandomDot() {
+            function moveToRandomPosition() {
+                const randomX = (Math.random() - 0.5) * 150;
+                const randomY = (Math.random() - 0.5) * 150;
+                const randomDuration = 0.3 + Math.random() * 0.4;
+
+                loadingDot.style.transition = `transform ${randomDuration}s ease-in-out`;
+                loadingDot.style.transform = `translate(${randomX}px, ${randomY}px)`;
+            }
+
+            moveToRandomPosition();
+            const interval = setInterval(moveToRandomPosition, 600);
+
+            // Stop animation when loading screen disappears
+            setTimeout(() => {
+                clearInterval(interval);
+            }, 3000);
+        }
+
+        // Start random dot animation
+        animateRandomDot();
+
+        // Loading screen auto-transition
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+            greetingScreen.classList.add('active');
+        }, 3000);
+
+        // Start button
+        startButton.addEventListener('click', () => {
+            greetingScreen.classList.remove('active');
+            mainScreen.classList.add('active');
+            createDecorativeHearts();
+            createPopHearts();
+            // Start playing background music
+            audio.play().catch(e => console.log('Audio play failed:', e));
+        });
+
+        // Create decorative hearts with circles
+        function createDecorativeHearts() {
+            // Small floating hearts (increased density)
+            for (let i = 0; i < 40; i++) {
+                const smallHeart = document.createElement('div');
+                smallHeart.className = 'small-heart';
+                smallHeart.textContent = '❤️';
+                smallHeart.style.top = Math.random() * 100 + '%';
+                smallHeart.style.left = Math.random() * 100 + '%';
+                smallHeart.style.animationDelay = Math.random() * 2 + 's';
+                decorativeHearts.appendChild(smallHeart);
+            }
+
+            const catEmojis = ['😺', '😸', '😻', '😼', '😽', '🐱', '😾', '😿'];
+            for (let i = 0; i < 28; i++) {
+                const smallCat = document.createElement('div');
+                smallCat.className = 'small-cat';
+                smallCat.textContent = catEmojis[Math.floor(Math.random() * catEmojis.length)];
+                smallCat.style.top = Math.random() * 100 + '%';
+                smallCat.style.left = Math.random() * 100 + '%';
+                smallCat.style.animationDelay = Math.random() * 2 + 's';
+                decorativeHearts.appendChild(smallCat);
+            }
+        }
+
+        // Create popping hearts
+        function createPopHearts() {
+            setInterval(() => {
+                // Spawn four elements per tick for doubled density
+                for (let i = 0; i < 4; i++) {
+                    const popElement = document.createElement('div');
+                    popElement.className = 'pop-heart';
+
+                    const catEmojis = ['😺', '😸', '😻', '😼', '😽', '🐱', '😾', '😿'];
+                    const isHeart = Math.random() > 0.4; // 60% hearts, 40% cats
+                    popElement.textContent = isHeart ? '❤️' : catEmojis[Math.floor(Math.random() * catEmojis.length)];
+
+                    popElement.style.left = Math.random() * 100 + '%';
+                    popElement.style.top = Math.random() * 100 + '%';
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 100 + Math.random() * 100;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+
+                    popElement.style.setProperty('--tx', tx + 'px');
+                    popElement.style.setProperty('--ty', ty + 'px');
+
+                    mainScreen.appendChild(popElement);
+                    setTimeout(() => popElement.remove(), 1500);
+                }
+            }, 200);
+        }
+
+        // Typewriter effect
+        let typeWriterTimeoutId = null;
+        let fullLetterCache = '';
+
+        function typeLetterText() {
+            // Cache full text on first run
+            if (!fullLetterCache) {
+                fullLetterCache = letterText.getAttribute('data-fulltext') || letterText.textContent;
+                letterText.setAttribute('data-fulltext', fullLetterCache);
+            }
+
+            // Reset content and state
+            if (typeWriterTimeoutId) {
+                clearTimeout(typeWriterTimeoutId);
+                typeWriterTimeoutId = null;
+            }
+            letterText.textContent = '';
+            letterText.classList.add('typing');
+
+            const text = fullLetterCache;
+            let index = 0;
+
+            const step = () => {
+                if (index < text.length) {
+                    letterText.textContent += text.charAt(index);
+                    index++;
+                    typeWriterTimeoutId = setTimeout(step, 30);
+                } else {
+                    letterText.classList.remove('typing');
+                    typeWriterTimeoutId = null;
+                }
+            };
+
+            step();
+        }
+
+        let isEnvelopeOpen = false;
+        envelope.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            if (!isEnvelopeOpen) {
+                envelope.classList.add('open');
+                isEnvelopeOpen = true;
+                letterModal.classList.add('active');
+                typeLetterText();
+            } else {
+                envelope.classList.remove('open');
+                isEnvelopeOpen = false;
+                letterModal.classList.remove('active');
+                // Ensure typing stops and content resets on close
+                if (typeWriterTimeoutId) {
+                    clearTimeout(typeWriterTimeoutId);
+                    typeWriterTimeoutId = null;
+                }
+                if (fullLetterCache) {
+                    letterText.textContent = fullLetterCache;
+                    letterText.classList.remove('typing');
+                }
+            }
+        });
+
+        // Close letter by clicking background
+        letterModal.addEventListener('click', () => {
+            letterModal.classList.remove('active');
+            envelope.classList.remove('open');
+            isEnvelopeOpen = false;
+            if (typeWriterTimeoutId) {
+                clearTimeout(typeWriterTimeoutId);
+                typeWriterTimeoutId = null;
+            }
+            if (fullLetterCache) {
+                letterText.textContent = fullLetterCache;
+                letterText.classList.remove('typing');
+            }
+        });
+
+        // Close letter button
+        closeLetterBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            letterModal.classList.remove('active');
+            envelope.classList.remove('open');
+            isEnvelopeOpen = false;
+            if (typeWriterTimeoutId) {
+                clearTimeout(typeWriterTimeoutId);
+                typeWriterTimeoutId = null;
+            }
+            if (fullLetterCache) {
+                letterText.textContent = fullLetterCache;
+                letterText.classList.remove('typing');
+            }
+        });
+
+        // Prevent letter content click from closing
+        document.getElementById('letterContent').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+
+</html>
